@@ -1,0 +1,34 @@
+﻿# Compiled class files
+*.class
+target/
+build/
+
+# Log files
+*.log
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Environment files
+.env
+*.env
+
+# Docker volumes
+docker-data/
