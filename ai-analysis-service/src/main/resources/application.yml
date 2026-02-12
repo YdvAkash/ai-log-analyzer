@@ -1,0 +1,41 @@
+﻿server:
+  port: 8083
+
+spring:
+  application:
+    name: ai-analysis-service
+  
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/log_analyzer
+      database: log_analyzer
+  
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: ai-analysis-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+gemini:
+  api:
+    key: ${GEMINI_API_KEY:your-api-key-here}
+    url: https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent
+    batch-size: 100
+    batch-interval-seconds: 300
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  level:
+    com.loganalyzer: DEBUG

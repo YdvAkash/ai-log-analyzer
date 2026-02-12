@@ -1,0 +1,30 @@
+﻿server:
+  port: 8081
+
+spring:
+  application:
+    name: log-ingestion-service
+  
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/log_analyzer
+      database: log_analyzer
+  
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.add.type.headers: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+logging:
+  level:
+    com.loganalyzer: DEBUG
+    org.springframework.kafka: INFO
