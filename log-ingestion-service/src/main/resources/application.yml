@@ -7,7 +7,7 @@ spring:
   
   data:
     mongodb:
-      uri: mongodb://localhost:27017/log_analyzer
+      uri: mongodb+srv://ay2484900:RDGn4i1DP0kI6R6B@mernyard.qgzpk.mongodb.net/log_analyzer?retryWrites=true&w=majority
       database: log_analyzer
   
   kafka:
