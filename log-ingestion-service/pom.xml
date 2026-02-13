@@ -38,6 +38,12 @@
             <artifactId>spring-kafka</artifactId>
         </dependency>
 
+        <!-- Elasticsearch -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
+        </dependency>
+        
         <!-- Common Library -->
         <dependency>
             <groupId>com.loganalyzer</groupId>
