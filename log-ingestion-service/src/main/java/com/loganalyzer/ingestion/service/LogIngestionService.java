@@ -2,8 +2,10 @@ package com.loganalyzer.ingestion.service;
 
 import com.loganalyzer.ingestion.exception.InvalidLogException;
 import com.loganalyzer.ingestion.model.dto.LogRequest;
+import com.loganalyzer.ingestion.model.entity.LogDocument;
 import com.loganalyzer.ingestion.model.entity.RawLog;
 import com.loganalyzer.ingestion.model.entity.RawLog.Metadata;
+import com.loganalyzer.ingestion.repository.LogSearchRepository;
 import com.loganalyzer.ingestion.repository.RawLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class LogIngestionService {
 
     @Autowired 
     private KafkaProducerService kafkaProducerService;
+
+    @Autowired
+    private LogSearchRepository elasticRepository;
 
     public RawLog processAndSave(LogRequest request) {
         // 1. Validation
@@ -46,6 +51,18 @@ public class LogIngestionService {
         // 3. Pehle MongoDB mein save karein
         RawLog savedLog = repository.save(entity);
 
+        try {
+            LogDocument doc = LogDocument.builder()
+                    .id(savedLog.getLogId())
+                    .content(savedLog.getRawContent())
+                    .source(savedLog.getSource())
+                    .timestamp(savedLog.getTimestamp())
+                    .build();
+            elasticRepository.save(doc);
+            System.out.println("Elasticsearch indexing successful for logId: " + savedLog.getLogId());
+        } catch (Exception e) {
+            System.err.println("Elasticsearch indexing failed: " + e.getMessage());
+        }
         // 4. Ab Kafka mein push karein (savedLog use karke)
         try {
             kafkaProducerService.sendRawLog(savedLog);
