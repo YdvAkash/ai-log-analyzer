@@ -27,10 +27,16 @@ public class StorageService {
             log.info("Attempting to save ID {} to MongoDB", entity.getId());
             mongoRepository.save(entity);
             log.info("Saved to MongoDB: {}", entity.getId());
+            
+com.loganalyzer.common.dto.LogEvent aiEvent = new com.loganalyzer.common.dto.LogEvent();
+aiEvent.setLogId(entity.getId());
+aiEvent.setServiceName(entity.getSource());
+aiEvent.setRawMessage(entity.getRawContent());
+aiEvent.setLogLevel(entity.getLogLevel());
+aiEvent.setClusterId(entity.getId()); // Testing ke liye ID ko hi ClusterId bana dein
 
-            // 1. Trigger AI Service (VERY IMPORTANT)
-            // AI Service 'clustered-logs' sun rahi hai, toh humein wahi bhejna hoga
-            kafkaTemplate.send("clustered-logs", entity.getId(), entity);
+kafkaTemplate.send("clustered-logs", entity.getId(), aiEvent);
+log.info("Properly mapped event sent to AI Service for Log ID: {}", entity.getId());
 log.info("SUCCESS: Trigger sent to AI Analysis Service!...........................................");
             // 2. Save to Elasticsearch
             LogDocument doc = LogDocument.builder()

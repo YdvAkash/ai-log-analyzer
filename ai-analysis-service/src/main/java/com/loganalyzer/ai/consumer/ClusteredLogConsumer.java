@@ -21,37 +21,30 @@ public class ClusteredLogConsumer {
     // Key: ClusterId
     private final Set<String> analyzedClusters = ConcurrentHashMap.newKeySet();
 
-    @KafkaListener(
-        topics = "clustered-logs",
-        groupId = "ai-analysis-v7"
-    )
-    public void consumeClusteredLog(LogEvent event) {
-        log.info(".......................AI Consumer Triggered for Log ID: {}........................", event.getLogId());
-        String clusterId = event.getClusterId();
+@KafkaListener(
+    topics = "clustered-logs",
+    groupId = "ai-analysis-v7"
+)
+public void consumeClusteredLog(LogEvent event) {
+    log.info(".......................AI Consumer Triggered for Log ID: {}........................", event.getLogId());
+    
+    // Testing Bypass: Agar clusterId null hai, toh hum temporary unique analyze karenge
+    String effectiveId = (event.getClusterId() != null) ? event.getClusterId() : event.getLogId();
 
-        // 1. Check if clusterId is null (Safety check)
-        if (clusterId == null) {
-            log.warn("Log [{}] has no Cluster ID. Skipping AI analysis.", event.getLogId());
-            return;
-        }
+    if (effectiveId == null) {
+        log.warn("Both Log ID and Cluster ID are null. Skipping.");
+        return;
+    }
 
-        // 2. Optimization: Analyze only if this is a new cluster
-        if (!analyzedClusters.contains(clusterId)) {
-            log.info("New Cluster detected [{}]. Initiating AWS Bedrock Analysis...", clusterId);
-            
-            try {
-                // Call AI Service to get Root Cause and Fix
-                analysisService.analyzeWithAI(event);
-                
-                // Add to analyzed set so we don't call AI for the same error pattern again
-                analyzedClusters.add(clusterId);
-                
-            } catch (Exception e) {
-                log.error("AI Analysis failed for cluster [{}]: {}", clusterId, e.getMessage());
-            }
-        } else {
-            log.debug("Cluster [{}] already analyzed. Skipping duplicate AI call.", clusterId);
-            // Optional: Update the existing DB record with a reference to the previous analysis
+    if (!analyzedClusters.contains(effectiveId)) {
+        log.info("Initiating AI Analysis for Log/Cluster: [{}]", effectiveId);
+        
+        try {
+            analysisService.analyzeWithAI(event);
+            analyzedClusters.add(effectiveId);
+        } catch (Exception e) {
+            log.error("AI Analysis failed: {}", e.getMessage());
         }
     }
+}
 }
