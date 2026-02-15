@@ -14,6 +14,9 @@
     <artifactId>log-ingestion-service</artifactId>
 
     <dependencies>
+
+      
+    
         <!-- Spring Boot Web -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .header {
+            background-color: #d32f2f; /* Red Alert Color */
+            color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+        .content {
+            padding: 20px;
+            background-color: #ffffff;
+        }
+        .error-box {
+            background-color: #fff5f5;
+            border-left: 5px solid #d32f2f;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            word-break: break-all;
+        }
+        .footer {
+            background-color: #f5f5f5;
+            padding: 15px;
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+        }
+        .label {
+            font-weight: bold;
+            color: #555;
+            display: inline-block;
+            width: 120px;
+        }
+        .status-badge {
+            background-color: #d32f2f;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="margin:0;">🚨 Critical Alert</h1>
+            <p style="margin:5px 0 0 0;">AI Log Analyzer System</p>
+        </div>
+
+        <div class="content">
+            <p>Hi Developer,</p>
+            <p>A high-severity log has been detected in your application. Below are the details:</p>
+            
+            <div style="margin-bottom: 10px;">
+                <span class="label">Service Name:</span> <strong th:text="${serviceName}">N/A</strong>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <span class="label">Log Level:</span> <span class="status-badge" th:text="${logLevel}">ERROR</span>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <span class="label">Timestamp:</span> <span th:text="${timestamp}">N/A</span>
+            </div>
+
+            <p><strong>Raw Error Message:</strong></p>
+            <div class="error-box" th:text="${message}">
+                Error message content will appear here...
+            </div>
+
+            <p style="margin-top: 20px;">Please check the Dashboard for AI-generated Root Cause Analysis and Fix Suggestions.</p>
+            
+            <a href="http://localhost:3000/dashboard" 
+               style="display: inline-block; padding: 10px 20px; background-color: #1976d2; color: white; text-decoration: none; border-radius: 5px; margin-top: 10px;">
+               View Full Analysis
+            </a>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated message from your Log Monitoring System.</p>
+            <p>&copy; 2026 AI Log Analyzer Project - Akash Yadav</p>
+        </div>
+    </div>
+</body>
+</html>

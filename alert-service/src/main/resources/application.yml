@@ -4,37 +4,43 @@
 spring:
   application:
     name: alert-service
-  
-  datasource:
-    url: jdbc:postgresql://localhost:5432/log_analyzer
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  
+
+  # MongoDB for Alert History
+  data:
+    mongodb:
+      uri:  mongodb+srv://ay2484900:RDGn4i1DP0kI6R6B@mernyard.qgzpk.mongodb.net/log_analyzer?retryWrites=true&w=majority
+
+  # Kafka Configuration
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      group-id: alert-service-group
+      group-id: alert-group
       auto-offset-reset: earliest
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: "*"
+        spring.json.trusted.packages: "com.loganalyzer.common.dto"
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
+  # SMTP Mail Configuration
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ay2484900@gmail.com
+    password: "meyp dyuk ebdq sbzl" # Use Google App Password here
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+# Thymeleaf Configuration
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    cache: false
 
 logging:
   level:
-    com.loganalyzer: DEBUG
+    com.loganalyzer.alert: DEBUG

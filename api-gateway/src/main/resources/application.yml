@@ -1,5 +1,5 @@
 ﻿server:
-  port: 8080
+  port: 9090
 
 spring:
   application:
@@ -7,23 +7,13 @@ spring:
   
   cloud:
     gateway:
-      routes:
-        - id: log-ingestion-service
-          uri: http://localhost:8081
-          predicates:
-            - Path=/api/v1/logs/**
-        
-        - id: alert-service
-          uri: http://localhost:8085
-          predicates:
-            - Path=/api/v1/alerts/**
+      discovery:
+        locator:
+          enabled: true # If using Eureka in future
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics
-
+# Logging configuration for our filter
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG
+    root: INFO
+    com.loganalyzer.gateway: DEBUG
+    org.springframework.cloud.gateway: INFO
