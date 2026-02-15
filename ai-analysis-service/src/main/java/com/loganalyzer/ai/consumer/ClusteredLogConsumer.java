@@ -23,10 +23,10 @@ public class ClusteredLogConsumer {
 
     @KafkaListener(
         topics = "clustered-logs",
-        groupId = "ai-analysis-group",
-        containerFactory = "kafkaListenerContainerFactory"
+        groupId = "ai-analysis-v7"
     )
     public void consumeClusteredLog(LogEvent event) {
+        log.info(".......................AI Consumer Triggered for Log ID: {}........................", event.getLogId());
         String clusterId = event.getClusterId();
 
         // 1. Check if clusterId is null (Safety check)

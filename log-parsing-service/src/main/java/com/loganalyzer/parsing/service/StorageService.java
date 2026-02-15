@@ -4,9 +4,9 @@ import com.loganalyzer.parsing.model.entity.LogDocument;
 import com.loganalyzer.parsing.model.entity.LogEntity;
 import com.loganalyzer.parsing.repository.LogElasticRepository;
 import com.loganalyzer.parsing.repository.LogMongoRepository;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -19,14 +19,20 @@ public class StorageService {
     @Autowired
     private LogElasticRepository elasticRepository;
 
+    @Autowired
+    private KafkaTemplate<String, Object> kafkaTemplate; // AI Service ke liye added
+
     public void saveToAllDatabases(LogEntity entity) {
         try {
-            // 1. Save to MongoDB (Permanent Record)
-            log.info("Attempting to save ID {} to collection 'processed_logs'", entity.getId());
+            log.info("Attempting to save ID {} to MongoDB", entity.getId());
             mongoRepository.save(entity);
             log.info("Saved to MongoDB: {}", entity.getId());
 
-            // 2. Save to Elasticsearch (Search Index)
+            // 1. Trigger AI Service (VERY IMPORTANT)
+            // AI Service 'clustered-logs' sun rahi hai, toh humein wahi bhejna hoga
+            kafkaTemplate.send("clustered-logs", entity.getId(), entity);
+log.info("SUCCESS: Trigger sent to AI Analysis Service!...........................................");
+            // 2. Save to Elasticsearch
             LogDocument doc = LogDocument.builder()
                     .id(entity.getId())
                     .content(entity.getRawContent())
@@ -39,7 +45,7 @@ public class StorageService {
             log.info("Indexed in Elasticsearch: {}", entity.getId());
 
         } catch (Exception e) {
-            log.error("Failed to save log data for ID [{}]: {}", entity.getId(), e.getMessage());
+            log.error("Failed to save or trigger AI for ID [{}]: {}", entity.getId(), e.getMessage());
         }
     }
-}
+}   
