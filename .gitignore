@@ -29,6 +29,8 @@ desktop.ini
 # Environment files
 .env
 *.env
+application.yml
+.env
 
 # Docker volumes
 docker-data/
