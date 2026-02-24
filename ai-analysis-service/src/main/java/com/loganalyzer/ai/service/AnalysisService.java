@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AnalysisService {
 
-    @Autowired
-    private BedrockService bedrockService;
+    // @Autowired
+    // private BedrockService bedrockService;
 
+    @Autowired
+    private GeminiService bedrockService; // BedrockService ki jagah
     @Autowired
     private LogAnalysisRepository repository;
 
@@ -28,10 +30,11 @@ public class AnalysisService {
         try {
             // 1. Construct the structured prompt using the Template
             String prompt = promptTemplate.buildAnalysisPrompt(event);
+                    System.out.println("---------AI Response Bellow----------");
 
             // 2. Get AI Response from Bedrock (Claude 3 / Llama 3)
             String aiResponse = bedrockService.getAnalysis(prompt);
-
+            System.out.println(aiResponse);
             // 3. Parse and Save the insights to MongoDB
             parseAndSave(event.getLogId(), aiResponse);
 

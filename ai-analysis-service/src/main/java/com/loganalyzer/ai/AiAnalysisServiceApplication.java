@@ -10,6 +10,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 @EnableKafka
 public class AiAnalysisServiceApplication {
     public static void main(String[] args) {
+        System.out.println("---STEP 1 ------  MAIN----------");
         SpringApplication.run(AiAnalysisServiceApplication.class, args);
     }
 }
