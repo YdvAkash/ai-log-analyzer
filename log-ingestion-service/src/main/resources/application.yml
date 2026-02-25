@@ -1,5 +1,5 @@
 ﻿server:
-  port: 8081
+  port: 8089
 
 spring:
   application:
@@ -7,16 +7,22 @@ spring:
   
   data:
     mongodb:
-      uri: mongodb+srv://ay2484900:RDGn4i1DP0kI6R6B@mernyard.qgzpk.mongodb.net/log_analyzer?retryWrites=true&w=majority
+      uri: mongodb+srv://12345678:3plqvKOO50bXsbTo@pop.114ym.mongodb.net/log_analyzer?retryWrites=true&w=majority
       database: log_analyzer
-  
+    
+    elasticsearch:
+      uris: http://localhost:9200
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       properties:
-        spring.json.add.type.headers: false
+        # FIXED: Type headers ko true rakhein taaki Parsing service object identify kar sake
+        spring.json.add.type.headers: true 
+        # Optional: Agar headers ke bina bhi map karna ho
+        spring.json.type.mapping: "logEvent:com.loganalyzer.common.dto.LogEvent"
 
 management:
   endpoints:

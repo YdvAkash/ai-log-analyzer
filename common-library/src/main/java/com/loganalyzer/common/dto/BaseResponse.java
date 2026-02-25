@@ -8,29 +8,30 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class BaseResponse<T> {
     private boolean success;
     private String message;
     private T data;
-    private LocalDateTime timestamp;
-    
-    public static <T> BaseResponse<T> success(T data) {
+    private ErrorDetail error; // Optional error info
+    @Builder.Default
+    private LocalDateTime responseTime = LocalDateTime.now();
+
+    public static <T> BaseResponse<T> ok(T data, String message) {
         return BaseResponse.<T>builder()
                 .success(true)
-                .message("Success")
+                .message(message)
                 .data(data)
-                .timestamp(LocalDateTime.now())
                 .build();
     }
-    
-    public static <T> BaseResponse<T> error(String message) {
+
+    public static <T> BaseResponse<T> error(String message, ErrorDetail errorDetail) {
         return BaseResponse.<T>builder()
                 .success(false)
                 .message(message)
-                .timestamp(LocalDateTime.now())
+                .error(errorDetail)
                 .build();
     }
 }
