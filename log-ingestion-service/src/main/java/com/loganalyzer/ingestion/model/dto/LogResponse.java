@@ -3,7 +3,6 @@ package com.loganalyzer.ingestion.model.dto;
 import lombok.Builder;
 import lombok.Data;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @Builder // Builder pattern se object banana easy ho jata hai

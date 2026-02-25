@@ -1,26 +1,30 @@
 package com.loganalyzer.ingestion.service;
 
-import com.loganalyzer.ingestion.model.entity.RawLog;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.loganalyzer.common.dto.LogEvent;
+import com.loganalyzer.common.constants.KafkaTopics;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 public class KafkaProducerService {
 
-    private static final Logger logger = LoggerFactory.getLogger(KafkaProducerService.class);
-    private static final String TOPIC = "raw-logs";
-
     @Autowired
-    private KafkaTemplate<String, RawLog> kafkaTemplate;
+    private KafkaTemplate<String, LogEvent> kafkaTemplate;
 
-    public void sendRawLog(RawLog log) {
-        logger.info("Pushing log to Kafka topic: {}", TOPIC);
+    public void sendToKafka(LogEvent event) {
+        log.info("Pushing log [{}] to topic: {}", event.getLogId(), KafkaTopics.RAW_LOGS);
         
-        // Message ko Kafka topic mein bhej rahe hain
-        // Key: logId, Value: RawLog object
-        kafkaTemplate.send(TOPIC, log.getLogId(), log);
+        // Non-blocking send
+        kafkaTemplate.send(KafkaTopics.RAW_LOGS, event.getLogId(), event)
+            .whenComplete((result, ex) -> {
+                if (ex == null) {
+                    log.info("Log [{}] delivered to Kafka offset: {}", event.getLogId(), result.getRecordMetadata().offset());
+                } else {
+                    log.error("Kafka delivery failed for [{}]: {}", event.getLogId(), ex.getMessage());
+                }
+            });
     }
 }
