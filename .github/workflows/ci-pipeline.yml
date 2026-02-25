@@ -2,7 +2,7 @@ name: Java CI/CD with Maven & JaCoCo
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "**" ]
   pull_request:
     branches: [ "main" ]
 
