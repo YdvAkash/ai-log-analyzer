@@ -19,8 +19,8 @@
         <module>log-ingestion-service</module>
         <module>log-parsing-service</module>
         <module>ai-analysis-service</module>
-        <module>error-clustering-service</module>
         <module>alert-service</module>
+        <module>identity-service</module>
     </modules>
 
     <parent>
