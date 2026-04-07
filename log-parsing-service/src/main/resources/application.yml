@@ -5,6 +5,11 @@ spring:
   application:
     name: log-parsing-service
   
+  data:
+    mongodb:
+      uri: mongodb+srv://12345678:3plqvKOO50bXsbTo@pop.114ym.mongodb.net/log_analyzer?retryWrites=true&w=majority
+      database: log_analyzer
+
   elasticsearch:
     uris: http://localhost:9200
   
