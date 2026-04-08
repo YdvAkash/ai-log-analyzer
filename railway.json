@@ -1,0 +1,19 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "dockerfile",
+    "buildCommand": "mvn clean package -DskipTests"
+  },
+  "deploy": {
+    "startCommand": "java -jar api-gateway/target/api-gateway-1.0.0.jar",
+    "restartPolicyMaxRetries": 5,
+    "healthchecks": {
+      "readiness": {
+        "command": ["sh", "-c", "curl --fail http://localhost:8081/actuator/health || exit 1"],
+        "interval": 10,
+        "timeout": 5,
+        "retries": 5
+      }
+    }
+  }
+}
