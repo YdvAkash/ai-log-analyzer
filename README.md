@@ -15,25 +15,24 @@ Sentinel-AI is a high-performance, distributed observability pipeline designed t
 
 The project follows a decoupled, event-driven microservices architecture using **Apache Kafka** as the backbone.
 
-
-
 ### 🔄 The Data Pipeline
-1.  **Ingestion Service (8089)**: Receives raw logs via REST and pushes to `raw-logs` topic.
-2.  **Parsing Service (8082)**: Cleans data, extracts LogLevels using Regex, persists to **MongoDB Atlas**, and triggers `clustered-logs`.
-3.  **AI Analysis Service (8084)**: The "Brain." Uses **AWS Bedrock (Claude 3)** to analyze stack traces and identify unique error patterns (Clustering).
-4.  **Alert Service**: Dedicated service that consumes analysis results and fires real-time **Email notifications**.
+
+1. **Ingestion Service (8089)**: Receives raw logs via REST and pushes to the `raw-logs` topic.
+2. **Parsing Service (8082)**: Cleans data, extracts log levels using regex, persists to **MongoDB Atlas**, and triggers `clustered-logs`.
+3. **AI Analysis Service (8084)**: The "Brain." Uses **AWS Bedrock (Claude 3)** to analyze stack traces and identify unique error patterns (clustering).
+4. **Alert Service**: Dedicated service that consumes analysis results and fires real-time **email notifications**.
 
 ---
 
 ## ✨ Features
 
-* **Asynchronous Processing**: Uses Kafka to ensure the source application never slows down during high log volumes.
-* **AI Root Cause Analysis**: Integrated with **AWS Bedrock** to provide human-readable solutions for complex errors like *Circular Dependencies* or *DB Connection Leaks*.
-* **Intelligent Clustering**: Fingerprints unique errors to avoid redundant AI calls, reducing latency and AWS costs.
-* **Fault Tolerant**: Implements `ErrorHandlingDeserializer` to handle Kafka "Poison Pills" without crashing the pipeline.
-* **Polyglot Persistence**: 
-    * **MongoDB Atlas**: For persistent audit trails.
-    * **Elasticsearch**: Optimized for high-speed log searching.
+- **Asynchronous Processing**: Uses Kafka to ensure the source application never slows down during high log volumes.
+- **AI Root Cause Analysis**: Integrated with **AWS Bedrock** to provide human-readable solutions for complex errors like *Circular Dependencies* or *DB Connection Leaks*.
+- **Intelligent Clustering**: Fingerprints unique errors to avoid redundant AI calls, reducing latency and AWS costs.
+- **Fault Tolerant**: Implements `ErrorHandlingDeserializer` to handle Kafka "Poison Pills" without crashing the pipeline.
+- **Polyglot Persistence**:
+  - **MongoDB Atlas**: For persistent audit trails.
+  - **Elasticsearch**: Optimized for high-speed log searching.
 
 ---
 
@@ -44,7 +43,7 @@ The project follows a decoupled, event-driven microservices architecture using *
 | **Backend** | Java 21, Spring Boot 3.2.2 |
 | **Messaging** | Apache Kafka 3.6.1 |
 | **AI Integration** | AWS Bedrock (Anthropic Claude 3 / Llama 3) |
-| **Databases** | MongoDB Atlas, Elasticsearch (Bypass supported) |
+| **Databases** | MongoDB Atlas, Elasticsearch (bypass supported) |
 | **Infrastructure** | Docker, Zookeeper-less Kafka |
 
 ---
@@ -52,12 +51,15 @@ The project follows a decoupled, event-driven microservices architecture using *
 ## 🚀 Installation & Setup
 
 ### 1. Prerequisites
-* **Java 21** installed.
-* **Kafka** running on `localhost:9092`.
-* **AWS Credentials** with Bedrock access.
+
+- **Java 21** installed.
+- **Kafka** running on `localhost:9092`.
+- **AWS credentials** with Bedrock access.
 
 ### 2. Configuration (`application.yml`)
+
 Update the AI Analysis service with your credentials:
+
 ```yaml
 aws:
   accessKey: "YOUR_ACCESS_KEY"
@@ -68,21 +70,28 @@ spring:
   data:
     mongodb:
       uri: "your-mongodb-atlas-uri"
-3. Build & Run
-Bash
+```
+
+### 3. Build & Run
+
+```bash
 # Install common DTOs first
 cd common-library && mvn clean install
 
 # Build and run all services
 mvn clean install -DskipTests
 mvn spring-boot:run
-🧪 Advanced Testing (Postman)
-Simulate a complex production failure (e.g., Circular Dependency):
+```
 
-Endpoint: POST http://localhost:8080/api/v1/logs
-Body:
+## 🧪 Advanced Testing (Postman)
 
-JSON
+Simulate a complex production failure (e.g., circular dependency):
+
+**Endpoint:** `POST http://localhost:8080/api/v1/logs`
+
+**Body:**
+
+```json
 {
   "serviceName": "payment-gateway-service",
   "logLevel": "FATAL",
@@ -93,14 +102,21 @@ JSON
     "impact": "CRITICAL - 100% Payment Failures"
   }
 }
-💡 Key Interviewer Talking Points
-Event-Driven Design: Why Kafka? To handle backpressure and ensure loose coupling between Ingestion and AI layers.
+```
 
-Poison Pill Handling: How I prevented consumer crashes using ErrorHandlingDeserializer and Manual Type Mapping.
+---
 
-Cost Optimization: Implementing a clustering mechanism to ensure LLM calls are only made for unique error patterns.
+## 💡 Key Interviewer Talking Points
 
-MTTR Reduction: The system shifts observability from "What happened?" to "How do I fix it?", saving hours of manual debugging.
+- **Event-Driven Design**: Why Kafka? To handle backpressure and ensure loose coupling between Ingestion and AI layers.
+- **Poison Pill Handling**: How I prevented consumer crashes using `ErrorHandlingDeserializer` and manual type mapping.
+- **Cost Optimization**: Implementing a clustering mechanism to ensure LLM calls are only made for unique error patterns.
+- **MTTR Reduction**: The system shifts observability from "What happened?" to "How do I fix it?", saving hours of manual debugging.
 
-👨‍💻 Author
-Akash Yadav SDE | B.Tech ECE Student LinkedIn | GitHub |
+---
+
+## 👨‍💻 Author
+
+Akash Yadav · SDE · B.Tech ECE Student
+
+LinkedIn | GitHub
