@@ -25,6 +25,10 @@ public class DateUtils {
      * Falls back to current time if parsing fails to prevent system crash.
      */
     public static LocalDateTime parse(String dateStr) {
+        if (dateStr == null || dateStr.isBlank()) {
+            return LocalDateTime.now();
+        }
+
         try {
             return LocalDateTime.parse(dateStr, DEFAULT_FORMATTER);
         } catch (DateTimeParseException e) {
