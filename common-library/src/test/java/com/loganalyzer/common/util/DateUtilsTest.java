@@ -1,8 +1,9 @@
 package com.loganalyzer.common.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
@@ -18,7 +19,7 @@ class DateUtilsTest {
 
     @Test
     void formatReturnsNullForNullInput() {
-        assertEquals(null, DateUtils.format(null));
+        assertNull(DateUtils.format(null));
     }
 
     @Test
@@ -37,8 +38,8 @@ class DateUtilsTest {
 
         assertNotNull(nullResult);
         assertNotNull(blankResult);
-        assertTrue(!nullResult.isBefore(before) && !nullResult.isAfter(after));
-        assertTrue(!blankResult.isBefore(before) && !blankResult.isAfter(after));
+        assertFalse(nullResult.isBefore(before) || nullResult.isAfter(after));
+        assertFalse(blankResult.isBefore(before) || blankResult.isAfter(after));
     }
 
     @Test
@@ -48,6 +49,6 @@ class DateUtilsTest {
         LocalDateTime after = LocalDateTime.now();
 
         assertNotNull(result);
-        assertTrue(!result.isBefore(before) && !result.isAfter(after));
+        assertFalse(result.isBefore(before) || result.isAfter(after));
     }
 }
